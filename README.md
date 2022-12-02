@@ -1,8 +1,6 @@
 # [Advent of Code (2022)](https://adventofcode.com/2022)
 
 
-## 2022
-
 | Day | Problem | Solution |
 | --- | --- | --- |
 | 1 | [Calorie Counting](https://adventofcode.com/2022/day/1) | [Source](01/main.py) |
