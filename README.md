@@ -8,3 +8,4 @@
 | 3 | [Rucksack Reorganization](https://adventofcode.com/2022/day/3) | [Source](03/main.py) |
 | 4 | [Camp Cleanup](https://adventofcode.com/2022/day/4) | [Source](04/main.py) |
 | 5 | [Supply Stacks](https://adventofcode.com/2022/day/5) | [Source](05/main.py) |
+| 6 | [Tuning Trouble](https://adventofcode.com/2022/day/6) | [Source](06/main.py) |
