@@ -1,20 +1,19 @@
-grid = [
-['.','.','.','.','.','.',], # 00 01 02 03 04 05
-['.','.','.','.','.','.',], # 10 11 12 13 14 15
-['.','.','.','.','.','.',],	# 20 21 22 23 24 25
-['.','.','.','.','.','.',], # 30 31 32 33 34 35
-['H','.','.','.','.','.',]]	# 40 41 42 43 44 45
+import numpy as np
 
-#print(grid)
+global grid
+global gridT
+grid = np.array([['.','.','.','.','.','.'], ['.','.','.','.','.','.'], ['.','.','.','.','.','.'],['.','.','.','.','.','.'], ['H','.','.','.','.','.']], dtype=str)
 
-gridT = [
-['.','.','.','.','.','.',], # 00 01 02 03 04 05
-['.','.','.','.','.','.',], # 10 11 12 13 14 15
-['.','.','.','.','.','.',],	# 20 21 22 23 24 25
-['.','.','.','.','.','.',], # 30 31 32 33 34 35
-['.','.','.','.','.','.',]]
+
+gridT = np.array([['.','.','.','.','.','.'], ['.','.','.','.','.','.'], ['.','.','.','.','.','.'],['.','.','.','.','.','.'], ['.','.','.','.','.','.']], dtype=str)
+
 
 archivo = open("input2.txt")
+
+#make grid and gridT global variables
+
+
+
 
 
 # create an empty list to store the instructions from the file
@@ -38,7 +37,9 @@ def findT(grid):
 	for i in range(len(grid)):
 		for j in range(len(grid[i])):
 			if grid[i][j] == 'H':
-				if i-1 >= 0 and grid[i-1][j] == 'T':
+				if grid[i][j] == 'T':
+					res = True
+				elif i-1 >= 0 and grid[i-1][j] == 'T':
 					res = True
 				elif i+1 < len(grid) and grid[i+1][j] == 'T':
 					res = True
@@ -54,7 +55,9 @@ def findT(grid):
 					res = True
 				elif i+1 < len(grid) and j+1 < len(grid[i]) and grid[i+1][j+1] == 'T':
 					res = True
-	
+
+
+
 	if (res == False):
 		#find the pos where 'T' is and change it to '.'
 		for i in range(len(grid)):
@@ -64,77 +67,154 @@ def findT(grid):
 
 	return res
 
-	
+def printGrid(grid):
+	for i in range(len(grid)):
+		for j in range(len(grid[i])):
+			print(grid[i][j], end = ' ')
+		
+		print('\n')
+
 # apply the instructions to the matrix and remove then once is done
 print(instructions)
 k = 1
+
 while instructions:
 	direcc, moves = instructions[0]
 	instructions.pop(0)
 	isChange = False
+	print(direcc, moves)
 	for i in range(len(grid)) :
 	#start reading the grid from the left
 		for j in range(len(grid[i])):
-			#print('paso2')
 			if (grid [i][j] == 'H' and isChange == False ):
-				print('estoy pasando por ', k, ' vez')
-				if direcc == 'U' and i-moves >= 0:
-					grid[i-moves][j] = 'H'
+				if direcc == 'U':
+					q = 0
+					while q < moves:
+						a = moves
+						while(i-a < 0):
+							grid = np.insert(grid, 0, '.', axis=0)
+							gridT = np.insert(gridT, 0, '.', axis=0)
+							i += 1
+						if i-q-1 >= 0:
+							if grid[i-q-1][j] == 'T':
+								grid[i-q-1][j] = 'H'
+								grid[i-q][j] = '.'
+							else:
+								grid[i-q-1][j] = 'H'
+								grid[i-q][j] = '.'
+								if findT(grid) == False:
+									grid[i-q][j] = 'T'
+									gridT[i-q][j] = '#'
+							isChange = True
+							q += 1
 
-					grid[i][j] = '.'
-					if findT(grid) == False:
-						grid[i-moves+1][j] = 'T'
-						
-					isChange = True
-				elif direcc == 'D' and i+moves < len(grid):
-					grid[i+moves][j] = 'H'
+				elif direcc == 'D':
+					q = 0
+					while q < moves:
+						a = moves
+						while(i+a >= len(grid)):
+							num_cols = len(grid[i])
+							print(num_cols)
+							grid = np.insert(grid, len(grid)-1, '.', axis=0)
+							gridT = np.insert(gridT, len(grid)-1, '.', axis=0)
+						if i+q+1 < len(grid):
+							if grid[i+q+1][j] == 'T':
+								grid[i+q+1][j] = 'H'
+								grid[i+q][j] = '.'
+							else:
+								grid[i+q+1][j] = 'H'
+								grid[i+q][j] = '.'
+								if findT(grid) == False:
+									grid[i+q][j] = 'T'
+									gridT[i+q][j] = '#'
+							isChange = True
+						q += 1
 
-					grid[i][j] = '.'
-					if findT(grid) == False:
-						grid[i+moves-1][j] = 'T'
-						
-					isChange = True
-				elif direcc == 'L' and j-moves >= 0:
-					grid[i][j-moves] = 'H'
-					grid[i][j] = '.'
+				elif direcc == 'L':
+					q = 0
+					if (i == 4 and j == 0 and k == 1) :
+						grid[i][j] = 'H'
+						q += 1
+					while q < moves:
+						a = moves
+						while(j-a < 0):
+							num_filas = len(grid)
+							grid = np.insert(grid, 0, ['.']*num_filas, axis = 1)
+							gridT = np.insert(gridT, 0, ['.']*num_filas, axis = 1)
+							j += 1
+						if j-q-1 >= 0:
+							if grid[i][j-q-1] == 'T':
+								grid[i][j-q-1] = 'H'
+								grid[i][j-q] = '.'
+							else:
+								grid[i][j-q-1] = 'H'
+								grid[i][j-q] = '.'
+								if findT(grid) == False:
+									grid[i][j-q] = 'T'
+									gridT[i][j-q] = '#'
+							isChange = True
+						q += 1
 
-					if findT(grid) == False:
-						grid[i][j-moves+1] = 'T'
-						
-					isChange = True
-				elif direcc == 'R' and j+moves < len(grid[i]):
-					grid[i][j+moves] = 'H'
-					grid[i][j] = '.'
-
-					if findT(grid) == False:
-						grid[i][j+moves-1] = 'T'
-						
-					isChange = True
-				print('dirección: ', direcc, 'movimientos: ', moves)
-				print(grid[0],'\n')
-				print(grid[1],'\n')
-				print(grid[2],'\n')
-				print(grid[3],'\n')
-				print(grid[4],'\n')
+				elif direcc == 'R' :
+					q = 0
+					if (i == 4 and j == 0 and k == 1) :
+						grid[i][j+q+1] = 'H'
+						grid[i][j+q] = '.'
+						q += 1
+					while q < moves:
+						if j+q+1 < len(grid[i]):
+							if grid[i][j+q+1] == 'T':
+								grid[i][j+q+1] = 'H'
+								grid[i][j+q] = '.'
+							else:
+								grid[i][j+q+1] = 'H'
+								grid[i][j+q] = '.'
+								if findT(grid) == False:
+									grid[i][j+q] = 'T'
+									gridT[i][j+q] = '#'
+							isChange = True
+						else:
+							v = moves - 1
+							while( j+v+1 >= len(grid[i]) ):
+								num_filas = len(grid)
+								grid = np.insert(grid, len(grid[i]), ['.']*	num_filas, axis = 1)
+								gridT = np.insert(gridT, len(gridT[i]), ['.']*num_filas, axis = 1)
+								v -= 1
+							
+							if grid[i][j+q+1] == 'T':
+								grid[i][j+q+1] = 'H'
+								grid[i][j+q] = '.'
+							else:
+								grid[i][j+q+1] = 'H'
+								grid[i][j+q] = '.'
+								if findT(grid) == False:
+									grid[i][j+q] = 'T'
+									gridT[i][j+q] = '#'
+							isChange = True
+						q += 1
+				
+				printGrid(grid);
+				print('\n')
+				printGrid(gridT);
+				print('\n') 
 				k += 1
-				print(instructions)
 				break
 			
 		
-					
-print('tablero final\n')
-grid[4][0] = 's'
-print(grid[0],'\n')
-print(grid[1],'\n')
-print(grid[2],'\n')
-print(grid[3],'\n')
-print(grid[4],'\n') 
+printGrid(grid);
 
-print('tablero posiciones de T\n')
-print(gridT[0],'\n')
-print(gridT[1],'\n')
-print(gridT[2],'\n')
-print(gridT[3],'\n')
-print(gridT[4],'\n') 
+print('\n')
+
+printGrid(gridT);
+
+#count the number of # in gridT
+r = 0
+for i in range(len(gridT)):
+	for j in range(len(gridT[i])):
+		if gridT[i][j] == '#':
+			r += 1
+
+
+print('Star1: ', r)
 
 archivo.close()
