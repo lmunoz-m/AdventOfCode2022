@@ -39,6 +39,8 @@ def findT(grid):
 			if grid[i][j] == 'H':
 				if grid[i][j] == 'T':
 					res = True
+				elif grid[i][j] == 'T':
+					res = True
 				elif i-1 >= 0 and grid[i-1][j] == 'T':
 					res = True
 				elif i+1 < len(grid) and grid[i+1][j] == 'T':
@@ -216,5 +218,14 @@ for i in range(len(gridT)):
 
 
 print('Star1: ', r)
+
+#contar cuantas # hay en gridT
+count = 0
+for i in range(len(gridT)):
+	for j in range(len(gridT[i])):
+		if gridT[i][j] == '#':
+			count += 1
+
+print('cantidad de T: ', r)
 
 archivo.close()
