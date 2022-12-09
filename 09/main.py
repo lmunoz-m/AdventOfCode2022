@@ -32,6 +32,39 @@ while True:
 	# add the instruction to the list of instructions
     instructions.append((line[0], int(line[1])))
 
+# hacer una funcion que devuelva true o false si hay un T al lado de un H, mirar tambien las diagonales
+def findT(grid):
+	res = False
+	for i in range(len(grid)):
+		for j in range(len(grid[i])):
+			if grid[i][j] == 'H':
+				if i-1 >= 0 and grid[i-1][j] == 'T':
+					res = True
+				elif i+1 < len(grid) and grid[i+1][j] == 'T':
+					res = True
+				elif j-1 >= 0 and grid[i][j-1] == 'T':
+					res = True
+				elif j+1 < len(grid[i]) and grid[i][j+1] == 'T':
+					res = True
+				elif i-1 >= 0 and j-1 >= 0 and grid[i-1][j-1] == 'T':
+					res = True
+				elif i-1 >= 0 and j+1 < len(grid[i]) and grid[i-1][j+1] == 'T':
+					res = True
+				elif i+1 < len(grid) and j-1 >= 0 and grid[i+1][j-1] == 'T':
+					res = True
+				elif i+1 < len(grid) and j+1 < len(grid[i]) and grid[i+1][j+1] == 'T':
+					res = True
+	
+	if (res == False):
+		#find the pos where 'T' is and change it to '.'
+		for i in range(len(grid)):
+			for j in range(len(grid[i])):
+				if grid[i][j] == 'T':
+					grid[i][j] = '.'
+
+	return res
+
+	
 # apply the instructions to the matrix and remove then once is done
 print(instructions)
 k = 1
@@ -39,7 +72,7 @@ while instructions:
 	direcc, moves = instructions[0]
 	instructions.pop(0)
 	isChange = False
-	for i in range(len(grid)):
+	for i in range(len(grid)) :
 	#start reading the grid from the left
 		for j in range(len(grid[i])):
 			#print('paso2')
@@ -47,19 +80,35 @@ while instructions:
 				print('estoy pasando por ', k, ' vez')
 				if direcc == 'U' and i-moves >= 0:
 					grid[i-moves][j] = 'H'
+
 					grid[i][j] = '.'
+					if findT(grid) == False:
+						grid[i-moves+1][j] = 'T'
+						
 					isChange = True
 				elif direcc == 'D' and i+moves < len(grid):
 					grid[i+moves][j] = 'H'
+
 					grid[i][j] = '.'
+					if findT(grid) == False:
+						grid[i+moves-1][j] = 'T'
+						
 					isChange = True
 				elif direcc == 'L' and j-moves >= 0:
 					grid[i][j-moves] = 'H'
 					grid[i][j] = '.'
+
+					if findT(grid) == False:
+						grid[i][j-moves+1] = 'T'
+						
 					isChange = True
 				elif direcc == 'R' and j+moves < len(grid[i]):
 					grid[i][j+moves] = 'H'
 					grid[i][j] = '.'
+
+					if findT(grid) == False:
+						grid[i][j+moves-1] = 'T'
+						
 					isChange = True
 				print('dirección: ', direcc, 'movimientos: ', moves)
 				print(grid[0],'\n')
@@ -80,3 +129,12 @@ print(grid[1],'\n')
 print(grid[2],'\n')
 print(grid[3],'\n')
 print(grid[4],'\n') 
+
+print('tablero posiciones de T\n')
+print(gridT[0],'\n')
+print(gridT[1],'\n')
+print(gridT[2],'\n')
+print(gridT[3],'\n')
+print(gridT[4],'\n') 
+
+archivo.close()
